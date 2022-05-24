@@ -2,9 +2,14 @@ from tkinter import *
 import random
 import webbrowser
 import time
-from datetime import datetime, date
+from datetime import datetime
+import dishes
 
 
+# set up files for dishes and recipes
+dishes.createFiles()
+
+# clear function to clear displayed dishes
 def clear():
     try:
         food_label.destroy()
@@ -14,6 +19,8 @@ def clear():
         food_label.destroy()
         decide_button["state"] = NORMAL
 
+
+# closing time of my nearest grocery store
 def time():
     start = datetime.now().replace(hour=21, minute=0)
     morning = datetime.now().replace(hour=7, minute=0)
@@ -25,14 +32,14 @@ def time():
     time_label.config(text="Center Eleven schlüsst ih: " + str(timer))
     time_label.after(1000, time)
 
-
+# add your favorite recipe
 d = {}
-with open("C:/dishes/rezepte.txt") as f:
+with open("C:/Foodinator/dishes/recipe.txt") as f:
     for line in f:
         (key, val) = line.split(",")
         d[key] = val
 
-AUSWAHL =[
+choices =[
     ("Egal", 0),
     ("Vegetarisch", 1),
     ("S'Mami chocht", 2),
@@ -41,17 +48,16 @@ AUSWAHL =[
 def rightPath():
     path_int = mode.get()
     if path_int == 0:
-        path="C:/dishes/all.txt"
+        path = "C:/Foodinator/dishes/all.txt"
     elif path_int == 1:
-        path="C:/dishes/vegi.txt"
+        path = "C:/Foodinator/dishes/vegi.txt"
     elif path_int == 2:
-        path="C:/dishes/big.txt"
+        path = "C:/Foodinator/dishes/big.txt"
     else:
-        path="C:/dishes/schnell.txt"
+        path = "C:/Foodinator/dishes/schnell.txt"
     return path
 
 def getdish():
-
     path = rightPath()
     with open(path, 'rt') as file:
         dishes = file.readlines()
@@ -66,8 +72,8 @@ def callback2(x, y):
     labele = Label(root, text="Für das bruchsch es Rezept...?")
     labele.place(x=x, y=y+15)
 
-def myClick():
-
+# generate a random dish according to constraints
+def decideClick():
     global food_label
     name = getdish()
     food_label = Label(root, text=name)
@@ -82,7 +88,7 @@ def myClick():
 
     decide_button["state"] = DISABLED
 
-
+# Add a new dish to the correct file
 def addClick():
     try:
         new_dish = e.get()
@@ -102,11 +108,12 @@ def addClick():
         error_label = Label(root, text="Konnte nicht hinzugefügt werden")
         error_label.pack()
 
+# remove a dish
 def removeClick():
     to_remove = e.get()
     is_in_there = False
     if len(to_remove) > 0:
-        path=rightPath()
+        path = rightPath()
         f = open(path, "r")
         a = [to_remove]
         lst = []
@@ -132,8 +139,7 @@ def removeClick():
         not_well_label = Label(root, text="Keine Idee ist leider in im Rezeptbuch")
         not_well_label.pack()
 
-
-
+# render GUI
 root = Tk()
 root.title("Was git's?")
 root.geometry("700x600")
@@ -144,7 +150,7 @@ label.pack()
 mode = IntVar()
 mode.set("0")
 
-for text, modus in AUSWAHL:
+for text, modus in choices:
     Radiobutton(root, text=text, variable=mode, value=modus).pack()
 
 
@@ -153,7 +159,7 @@ e = Entry(root)
 
 del_button = Button(root, text="Menu löschen", command=removeClick)
 add_button = Button(root, text="Menu hinzufügen", command=addClick)
-decide_button = Button(root, text="Was gits..?", command=myClick)
+decide_button = Button(root, text="Was gits..?", command=decideClick)
 clear_button = Button(root, text="Clear to run again", command=clear)
 
 time_label = Label(root)

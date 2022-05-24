@@ -1,5 +1,5 @@
 # Foodinator
-A first Tkinter Exploration
+A first (very simple) Tkinter Exploration
 
 Dont know what to eat? Open up Foodinator and let it tell you what to eat!
 
